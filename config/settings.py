@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 
     'catalog',
+    'blog_note',
 ]
 
 
@@ -78,12 +79,10 @@ WSGI_APPLICATION = 'config.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': '}|{oIIa', # Название БД
-        'USER': 'postgres', # Пользователь для подключения
-        'PASSWORD': '1', # Пароль для этого пользователя
-        'HOST': '192.168.179.128', # Адрес, на котором развернут сервер БД
-        'PORT': 13791, # Порт, на котором работает сервер БД
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'course_project_06',
+        'USER': 'postgres',
+        'PASSWORD': '2092',
     }
 }
 
