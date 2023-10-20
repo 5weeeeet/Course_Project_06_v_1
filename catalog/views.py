@@ -1,7 +1,14 @@
-from django.shortcuts import render
-from django.views.generic import ListView, DetailView
+from urllib import request
 
-from catalog.models import Product
+from django.conf import settings
+from django.core.cache import cache
+from django.forms import inlineformset_factory
+from django.shortcuts import render
+from django.urls import reverse_lazy
+from django.views.generic import ListView, DetailView, UpdateView, DeleteView, CreateView
+
+from catalog.forms import ProductForm, VersionForm
+from catalog.models import Product, Version, Category
 
 
 class ProductListView(ListView):
@@ -10,6 +17,7 @@ class ProductListView(ListView):
     extra_context = {
         'title': 'Главная',
     }
+
 
 def contacts(request):
     context = {
@@ -34,3 +42,62 @@ class ProductDetailView(DetailView):
         context_data['pk'] = product_item.pk
         context_data['title'] = product_item.name
         return context_data
+
+
+class ProductUpdateView(UpdateView):
+    model = Product
+    form_class = ProductForm
+    success_url = reverse_lazy('catalog:home')
+
+    def get_context_data(self, **kwargs):
+        contex_data = super().get_context_data(**kwargs)
+        VersionFormset = inlineformset_factory(Product, Version, form=VersionForm, extra=1)
+        if self.request.method == 'POST':
+            contex_data['formset'] = VersionFormset(self.request.POST, instance=self.object)
+        else:
+            contex_data['formset'] = VersionFormset(instance=self.object)
+        return contex_data
+
+    def form_valid(self, form):
+        formset = self.get_context_data()['formset']
+        self.object = form.save()
+        if formset.is_valid():
+            formset.instance = self.object
+            formset.save()
+        return super().form_valid(form)
+
+
+class ProductDeleteView(DeleteView):
+    model = Product
+    success_url = reverse_lazy('catalog:home')
+
+
+class ProductCreateView(CreateView):
+    model = Product
+    form_class = ProductForm
+    success_url = reverse_lazy('catalog:home')
+
+    def save_model(self, request, obj):
+        if getattr(obj, 'user', None) is None:
+            obj.user = request.user
+        obj.save()
+
+    def get_context_data(self, **kwargs):
+        contex_data = super().get_context_data(**kwargs)
+        VersionFormset = inlineformset_factory(Product, Version, form=VersionForm, extra=1)
+        if self.request.method == 'POST':
+            contex_data['formset'] = VersionFormset(self.request.POST)
+        else:
+            contex_data['formset'] = VersionFormset()
+        return contex_data
+
+    def form_valid(self, form):
+        formset = self.get_context_data()['formset']
+        self.object = form.save()
+        if formset.is_valid():
+            formset.instance = self.object
+            formset.save()
+        self.object = form.save(commit=False)
+        self.object.user = self.request.user
+        self.object.save()
+        return super().form_valid(form)
