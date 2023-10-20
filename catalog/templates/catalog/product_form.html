@@ -1,0 +1,51 @@
+{% extends 'catalog/base_auth.html' %}
+{% block content1 %}
+<form class="row" method="post" enctype="multipart/form-data">
+    <div class="col-6">
+        <div class="card">
+            <div class="card-header">
+                <h4 class="card-title">
+                    {% if object %}
+                    Редактирование продукта
+                    {% else %}
+                    Добавление продукта
+                    {% endif %}
+                </h4>
+            </div>
+            <div class="card-body">
+
+                {% csrf_token %}
+                {{ form.as_p }}
+                <button type="submit" class="btn btn-success">
+                    Сохранить
+                </button>
+            </div>
+        </div>
+    </div>
+    {% if object %}
+    <div class="col-6">
+        <div class="card">
+            <div class="card-header">
+                <h4 class="card-title">
+                    Версия продукта
+                </h4>
+            </div>
+
+            {{ formset.management_form }}
+            {% for form in formset.forms %}
+
+            <div class="card-body">
+                {{ form.as_p }}
+                {% if not forloop.last %}
+                <hr>
+                <br>
+                {% endif %}
+            </div>
+
+
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+</form>
+{% endblock %}
