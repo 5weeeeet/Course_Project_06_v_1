@@ -81,13 +81,12 @@ WSGI_APPLICATION = 'config.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': os.getenv('DB_NAME'),
-        'USER': os.getenv('DB_USER'),
-        'PASSWORD': os.getenv('DB_PASSWORD'),
-        'OPTIONS': {
-            'client_encoding': 'utf-8'
-        },
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': '1234', # Название БД
+        'USER': 'postgres', # Пользователь для подключения
+        'PASSWORD': '1', # Пароль для этого пользователя
+        'HOST': '192.168.179.128', # Адрес, на котором развернут сервер БД
+        'PORT': 13791, # Порт, на котором работает сервер БД
     }
 }
 
@@ -147,9 +146,9 @@ EMAIL_HOST_USER = os.getenv('EMAIL_HOST_USER')
 EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD')
 EMAIL_USE_SSL = True
 #
-if DEBUG:
-    EMAIL_BACKEND = 'django.core.mail.backends.filebased.EmailBackend'
-    EMAIL_FILE_PATH = BASE_DIR.joinpath('email-messages')
+# if DEBUG:
+#     EMAIL_BACKEND = 'django.core.mail.backends.filebased.EmailBackend'
+#     EMAIL_FILE_PATH = BASE_DIR.joinpath('email-messages')
 
 CACHE_ENABLED = os.getenv('CACHE_ENABLED') == 'True'
 if CACHE_ENABLED:

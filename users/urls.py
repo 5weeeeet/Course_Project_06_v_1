@@ -14,7 +14,7 @@ urlpatterns = [
     path('register/', RegisterView.as_view(), name='register'), # регистрация
     path('profile/', UserProfileView.as_view(), name='profile'),    # профиль
     path('email_confirmation_sent/', EmailConfirmationSentView.as_view(), name='email_confirmation_sent'),  # письмо активации отправлено
-    path('confirm_email/<str:token>/', UserConfirmEmailView.as_view()),   # проверка токена
+    path('confirm_email/<str:token>/', UserConfirmEmailView.as_view(), name='confirm_email'),   # проверка токена
     path('email_confirmed/', EmailConfirmView.as_view(), name='email_verified'), # проверка почты прошла успешно
     path('confirm_email_failed/', EmailConfirmationFailedView.as_view(), name='email_confirmation_failed'), # проверка почты не прошла, ссылка неверная
     path('password-reset/', UserForgotPasswordView.as_view(), name='password_reset'),
